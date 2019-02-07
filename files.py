@@ -18,6 +18,40 @@ def list_files_in_dir(dir_path: str) -> Generator:
 
 
 # noinspection PyUnusedFunction
+def file_input(input_file_path: str, handler: Callable[[TextIO], None]):
+    """
+    Open the given file in input mode,
+    invoke the handler on it and finally
+    close it
+
+    :param input_file_path: Path of the file to be opened
+    :param handler: Callable handling the file input
+    """
+    with open(input_file_path) as fin:
+        handler(fin)
+
+
+# noinspection PyUnusedFunction
+def file_output(
+        output_file_path: str,
+        handler: Callable[[TextIO], None],
+        output_file_permissions: str = "a"
+):
+    """
+    Open the given file in output mode,
+    invoke the handler on it and finally
+    close it
+
+    :param output_file_path: Path of the file to be opened
+    :param handler: Callable handling the file input
+    :param output_file_permissions: Permission used by the
+                                    file, default to `a` (append)
+    """
+    with open(output_file_path, output_file_permissions) as fout:
+        handler(fout)
+
+
+# noinspection PyUnusedFunction
 def open_in_out_files(
         input_file_path: str,
         output_file_path: str,
@@ -36,7 +70,6 @@ def open_in_out_files(
                     file and the second the output
     :param output_file_permissions: Permission used by the
                     output file, default to `a` (append)
-    :return:
     """
     with open(input_file_path) as fin:
         with open(output_file_path, output_file_permissions) as fout:
