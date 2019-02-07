@@ -18,6 +18,32 @@ def list_files_in_dir(dir_path: str) -> Generator:
 
 
 # noinspection PyUnusedFunction
+def file_copy_content(
+        input_file_path: str,
+        output_file_path: str,
+        input_processor: Callable[[str], str] = lambda s: s,
+        output_file_permissions: str = "a"
+):
+    """
+    Copy the contents of the given input file to
+    the output file
+
+    :param input_file_path: Path of the input file
+    :param output_file_path: Path of the output file
+    :param input_processor: Callable invoked on the content
+                            on the input file, using the output
+                            of the function as the content to be
+                            written to the output file, default
+                            to the original content of the input
+    :param output_file_permissions: Permission used by the
+                    output file, default to `a` (append)
+    """
+    with open(input_file_path) as fin:
+        with open(output_file_path, output_file_permissions) as fout:
+            fout.write(input_processor(fin.read()))
+
+
+# noinspection PyUnusedFunction
 def file_input(input_file_path: str, handler: Callable[[TextIO], None]):
     """
     Open the given file in input mode,
