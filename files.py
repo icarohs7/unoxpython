@@ -1,9 +1,12 @@
 """
 Utils for file handling
 """
-
+from distutils.dir_util import copy_tree
 from glob import iglob
-from typing import Generator, Callable, TextIO
+from os import remove
+from os.path import isdir, isfile
+from shutil import rmtree
+from typing import Generator, Callable, TextIO, Tuple
 
 
 # noinspection PyUnusedFunction
@@ -100,3 +103,65 @@ def open_in_out_files(
     with open(input_file_path) as fin:
         with open(output_file_path, output_file_permissions) as fout:
             handler(fin, fout)
+
+
+# noinspection PyUnusedFunction
+def remove_folders(*folders: str):
+    """
+    Delete all the given folders
+
+    :param folders: List of folders to be deleted
+    """
+    for f in folders:
+        if isdir(f):
+            rmtree(f)
+
+
+# noinspection PyUnusedFunction
+def remove_files(*files: str):
+    """
+    Delete all the given files
+
+    :param files: List of files to be deleted
+    """
+    for file in files:
+        if isfile(file):
+            remove(file)
+
+
+# noinspection PyUnusedFunction
+def copy_folders(*folders: Tuple[str, str]):
+    """
+    Copy all files from one folder to another
+
+    :param folders: A list of tuples with 2 strings
+                with the first one representing the
+                source folder and the second the destination
+    """
+    for (src, dest) in folders:
+        if isdir(src) and isdir(dest):
+            copy_tree(src, dest)
+
+
+# noinspection PyUnusedFunction
+def deep_replace_file_contents(root_folder: str, *content_replace: Tuple[str, str]):
+    """
+    Recursively iterate over all files inside the root_folder and
+    its subdirectories and replace the content of all files with
+    the given replace instructions
+
+    :param root_folder: Folder within all subfiles will have its
+                    contents replaced
+    :param content_replace: List of tuples where each should have
+                        2 strings, the first representing the
+                        content to be replaced and and the second
+                        representing what will be used instead
+    """
+    if isdir(root_folder):
+        for file in list_files_in_dir(root_folder):
+            with open(file) as fin:
+                content = fin.read()
+                for (original, replace) in content_replace:
+                    content = content.replace(original, replace)
+            with open(file, "w") as fout:
+                fout.write(content)
