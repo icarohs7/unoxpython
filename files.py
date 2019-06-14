@@ -6,7 +6,7 @@ from glob import iglob
 from os import remove
 from os.path import isdir, isfile
 from shutil import rmtree
-from typing import Generator, Callable, TextIO, Tuple
+from typing import Generator, Callable, TextIO, Tuple, Iterator
 
 
 # noinspection PyUnusedFunction
@@ -165,3 +165,16 @@ def deep_replace_file_contents(root_folder: str, *content_replace: Tuple[str, st
                     content = content.replace(original, replace)
             with open(file, "w") as fout:
                 fout.write(content)
+
+
+# noinspection PyUnusedFunction
+def chars_in_file(file_name: str) -> Iterator[chr]:
+    """
+    An iterator yielding all characters of a given file
+    :param file_name: Name of the file to be read
+    :return: An iterator iterating through all letters of the given file
+    """
+    with open(file_name) as file:
+        for line in file.readlines():
+            for letter in line:
+                yield letter
